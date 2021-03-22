@@ -5,11 +5,13 @@ pub struct List {
 }
 
 impl List {
+
     pub fn new() -> Self {
         List {
             head: Link::Empty
         }
     }
+
     pub fn push(&mut self, elem:i32){
         let new_node = Box::new(Node {
             elem: elem,
@@ -17,6 +19,20 @@ impl List {
         });
 
         self.head = Link::More(new_node)
+    }
+
+    pub fn pop(&mut self)-> Option<i32>{
+        let result;
+        match &self.head {
+            Link::Empty => {
+                result = None;
+            }
+            Link::More(ref node) => {
+                result = Some(node.elem);
+                self.head = node.next;
+            }
+        };
+        result
     }
 }
 
