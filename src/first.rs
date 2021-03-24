@@ -5,14 +5,11 @@ pub struct List {
 }
 
 impl List {
-
     pub fn new() -> Self {
-        List {
-            head: Link::Empty
-        }
+        List { head: Link::Empty }
     }
 
-    pub fn push(&mut self, elem:i32){
+    pub fn push(&mut self, elem: i32) {
         let new_node = Box::new(Node {
             elem: elem,
             next: mem::replace(&mut self.head, Link::Empty),
@@ -21,18 +18,14 @@ impl List {
         self.head = Link::More(new_node)
     }
 
-    pub fn pop(&mut self)-> Option<i32>{
-        let result;
-        match &self.head {
-            Link::Empty => {
-                result = None;
-            }
-            Link::More(ref node) => {
-                result = Some(node.elem);
+    pub fn pop(&mut self) -> Option<i32> {
+        match mem::replace(&mut self.head, Link::Empty) {
+            Link::Empty => None,
+            Link::More(node) => {
                 self.head = node.next;
+                Some(node.elem)
             }
-        };
-        result
+        }
     }
 }
 
