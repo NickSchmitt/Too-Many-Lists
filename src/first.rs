@@ -65,3 +65,35 @@ mod test {
         assert_eq!(list.pop(), None);
     }
 }
+
+impl Drop for List {
+    fn drop(&mut self) {
+        // NOTE: you can't actually explicitly call `drop` in real Rust code;
+        // we're pretending to be the compiler!
+        self.head.drop(); // tail recursive - good!
+    }
+}
+
+impl Drop for Link {
+    fn drop(&mut self) {
+        match *self {
+            Link::Empty => {} // Done!
+            Link::More(ref mut boxed_node) => {
+                boxed_node.drop(); // tail recursive - good!
+            }
+        }
+    }
+}
+
+impl Drop for Box<Node> {
+    fn drop(&mut self) {
+        self.ptr.drop(); // uh oh, not tail recursive!
+        deallocate(self.ptr);
+    }
+}
+
+impl Drop for Node {
+    fn drop(&mut self) {
+        self.next.drop();
+    }
+}
